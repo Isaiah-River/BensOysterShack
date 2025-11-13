@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ben's Oyster Shack</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: url('oyster.cur'), auto;
+            text-align: center;
+        }
+
+        .background {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400% 400%;
+            animation: rainbow 10s ease infinite;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            min-height: 100vh;
+            padding-top: 50px;
+        }
+
+        .sign {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            width: 80%;
+            background-image: url(wood.png);
+            margin: 0 auto 10%;
+        }
+
+        .title {
+            padding: 5%;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 0 20px #fff, 0 0 30px #ff0;
+            animation: titleAnimation 2s infinite alternate;
+        }
+
+        .oysters {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 0 0 20px #ff0;
+            animation: oysterAnimation 2s infinite alternate;
+            margin: 10px 0;
+        }
+
+        .image-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .spinning-image {
+            width: 450px;
+            height: 450px;
+            animation: spin 3s linear infinite;
+        }
+
+        .annoying-text {
+            font-size: 3rem;
+            color: cyan;
+            text-shadow: 3px 3px 5px magenta, -3px -3px 5px yellow;
+            animation: annoyingEffect 1s infinite alternate;
+        }
+
+        .enter-btn {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border: 2px solid #00ff00;
+            background: black;
+            color: #00ff00;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .enter-btn:hover { background-color: #00ff00; color: black; }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes titleAnimation {
+            0% { transform: scale(1); color: #ff0; }
+            100% { transform: scale(2); color: #ff00ff; }
+        }
+        @keyframes oysterAnimation {
+            0% { transform: scale(1); color: #ff0000; }
+            50% { transform: scale(1.5); color: #00ff00; }
+            100% { transform: scale(1); color: #0000ff; }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes annoyingEffect {
+            0% { transform: rotate(-5deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.2); }
+            100% { transform: rotate(-5deg) scale(1); }
+        }
+
+        /* canvas used to replace text nodes */
+        .pixel-canvas {
+            display: inline-block;
+            vertical-align: baseline;
+            image-rendering: pixelated;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            background: transparent;
+        }
+
+        /* keep visual fallback if JS disabled */
+        .pixel-fallback {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <div class="content" id="main-content" style="display: none;">
+        <h1 class="title pixelated-text">Welcome to Ben's <br>Oyster Shack!</h1>
+
+        <div class="oysters-container">
+            <p class="oysters pixelated-text">Fresh Oysters from Ontario!</p>
+            <p class="oysters pixelated-text">Best Oysters in the World!!</p>
+
+            <div class="image-row">
+                <img src="oyster.png" class="spinning-image" alt="oyster">
+                <img src="ben.png" alt="ben">
+                <img src="oysterright.png" class="spinning-image" alt="oyster right">
+            </div>
+
+            <p class="annoying-text pixelated-text" style="padding-bottom: 3%;">We Only Sell the Best!!!</p>
+
+            <div class="sign">
+                <div style="display: flex; width: 100%; justify-content: space-around; text-align: center;">
+                    <div style="width: 45%; border-right: 5px dashed yellow;">
+                        <h1 class="annoying-text pixelated-text">Meet Ben:</h1>
+                        <img src="meetben.gif" alt="Ben himself" style="width: auto; height: 200px; border: 5px solid yellow;">
+                        <p class="pixelated-text" style="color: white; font-size: 20px; text-shadow: 2px 2px 5px black;">
+                            Ben has been shuckin’ oysters since he was 3 years old. 
+                            He once ate 35 oysters in one sitting. He will challenge 
+                            you to an oyster-eating contest, and you will lose.
+                        </p>
+                    </div>
+
+                    <div style="width: 45%;">
+                        <h1 class="annoying-text pixelated-text">Hours & Location</h1>
+                        <p class="pixelated-text" style="color: white; font-size: 20px; text-shadow: 2px 2px 5px black;">
+                            🦪 <b>Open:</b><br>
+                            Monday: 9:00 AM - 4:00 PM<br>
+                            Tuesday: Closed<br>
+                            Wednesday: Open<br>
+                            Thursday: 9:00 AM - 4:00 PM<br>
+                            Friday: 2:00 PM - 4:30 PM<br>
+                            Saturday: 10:00 AM - 5:00 PM<br>
+                            Sunday: Closed<br><br>
+                            🦪 <b>Location:</b> 1289 Wharf St Bay Ridges, Pickering, ON L1W 1A2, Canada<br>
+                            🦪 <b>Phone:</b> Ben doesn’t have a phone
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center; width: 100%;">
+                    <h1 class="annoying-text pixelated-text">MENU</h1>
+                    <p class="pixelated-text" style="color: cyan; font-size: 25px; font-weight: bold;">
+                        🦪 Classic Oysters - <span style="color: yellow;">$5 each</span><br>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <button class="enter-btn" style="margin-top: 22%;" id="enter-btn">ENTER SITE</button>
+
+    <audio id="background-music" loop>
+        <source src="bensong.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script>
+    (function(){
+        // Pixelation configuration
+        const PIXEL_SCALE = 4; // render at 1/PIXEL_SCALE then scale canvas up. Increase to get blockier look.
+        const SELECTOR = '.pixelated-text';
+
+        // Utility: compute numeric style value fallback
+        function parsePx(v, fallback = 0) {
+            if (!v) return fallback;
+            return parseFloat(v.replace('px','')) || fallback;
+        }
+
+        // Wrap text to fit width (in canvas space)
+        function wrapText(ctx, text, maxWidth) {
+            const words = text.split(/\s+/);
+            const lines = [];
+            let line = '';
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line ? (line + ' ' + words[n]) : words[n];
+                const metrics = ctx.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    lines.push(line);
+                    line = words[n];
+                } else {
+                    line = testLine;
+                }
+            }
+            if (line) lines.push(line);
+            return lines;
+        }
+
+        function pixelateElement(el, scale) {
+            const text = el.innerText || el.textContent;
+            if (!text || !text.trim()) return;
+
+            // Save fallback content in case of failure
+            const originalHTML = el.innerHTML;
+
+            // computed style and bounding rect
+            const cs = window.getComputedStyle(el);
+            const rect = el.getBoundingClientRect();
+            // If width or height is zero, skip
+            if (rect.width < 1 || rect.height < 1) return;
+
+            // target canvas real pixel size = element size / scale (small)
+            const smallW = Math.max(1, Math.floor(rect.width / scale));
+            const smallH = Math.max(1, Math.floor(rect.height / scale));
+
+            // create canvas in small resolution
+            const canvas = document.createElement('canvas');
+            canvas.width = smallW;
+            canvas.height = smallH;
+            const ctx = canvas.getContext('2d');
+
+            // background (transparent)
+            ctx.clearRect(0,0,smallW,smallH);
+
+            // derive font in canvas-space: scale down the font-size
+            // the computed fontSize is in px for the element
+            const computedFontSize = parsePx(cs.fontSize, 16);
+            const canvasFontSize = Math.max(4, Math.round(computedFontSize / scale));
+            const fontWeight = cs.fontWeight || 'normal';
+            const fontFamily = cs.fontFamily || 'Arial, sans-serif';
+            ctx.font = `${fontWeight} ${canvasFontSize}px ${fontFamily}`;
+
+            // handle text color
+            const fillStyle = cs.color || '#000';
+            ctx.fillStyle = fillStyle;
+
+            // text align
+            const align = cs.textAlign || 'left';
+            ctx.textAlign = (align === 'center' || align === 'right' || align === 'end') ? align : 'left';
+            ctx.textBaseline = 'top';
+
+            // simple text-shadow support: map to ctx.shadow*
+            if (cs.textShadow && cs.textShadow !== 'none') {
+                // crude parse: try to match "offsetX offsetY blur color"
+                // e.g. "2px 2px 5px rgba(0,0,0,0.5)"
+                const m = cs.textShadow.match(/(-?\d+px)\s+(-?\d+px)(?:\s+(\d+px))?(?:\s+(.*))?/);
+                if (m) {
+                    ctx.shadowOffsetX = parsePx(m[1], 0)/scale;
+                    ctx.shadowOffsetY = parsePx(m[2], 0)/scale;
+                    ctx.shadowBlur = parsePx(m[3], 0)/scale;
+                    ctx.shadowColor = m[4] || 'rgba(0,0,0,0.6)';
+                } else {
+                    // fallback small shadow
+                    ctx.shadowOffsetX = 1/scale;
+                    ctx.shadowOffsetY = 1/scale;
+                    ctx.shadowBlur = 0;
+                    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+                }
+            } else {
+                ctx.shadowColor = 'transparent';
+            }
+
+            // calculate max width in canvas-space for wrapping
+            const paddingLeft = parsePx(cs.paddingLeft, 0) / scale;
+            const paddingRight = parsePx(cs.paddingRight, 0) / scale;
+            const maxTextWidth = Math.max(1, smallW - paddingLeft - paddingRight);
+
+            // build lines that fit the small canvas width
+            // preserve manual line breaks in original text
+            const paragraphs = text.split(/\r?\n/);
+            let lines = [];
+            paragraphs.forEach((p, idx) => {
+                const trimmed = p.trim();
+                if (trimmed === '') {
+                    lines.push(''); // preserve blank line
+                } else {
+                    const wrapped = wrapText(ctx, trimmed, maxTextWidth);
+                    lines = lines.concat(wrapped);
+                    if (idx < paragraphs.length - 1) {
+                        // add explicit newline spacing
+                        // no-op (next paragraph begins on next line)
+                    }
+                }
+            });
+
+            // compute line height in canvas-space
+            const lineHeight = Math.max( Math.round(canvasFontSize * 1.1), 1);
+
+            // vertical alignment: top by default; if element has height larger than needed, center if requested
+            const totalTextHeight = lines.length * lineHeight;
+            let startY = 0;
+            const verticalAlign = cs.verticalAlign || 'top';
+            // simple center if element taller than text and text is block
+            if (rect.height > (totalTextHeight * scale) && (cs.display === 'block' || el.tagName.toLowerCase().match(/^h|p|div|section|article/))) {
+                startY = Math.max(0, Math.floor((smallH - totalTextHeight) / 2));
+            }
+
+            // draw lines
+            ctx.save();
+            ctx.fillStyle = fillStyle;
+            ctx.font = `${fontWeight} ${canvasFontSize}px ${fontFamily}`;
+            lines.forEach((line, i) => {
+                let x = paddingLeft;
+                if (ctx.textAlign === 'center') x = smallW / 2;
+                else if (ctx.textAlign === 'right' || ctx.textAlign === 'end') x = smallW - paddingRight;
+                const y = startY + i * lineHeight;
+                ctx.fillText(line, x, y);
+            });
+            ctx.restore();
+
+            // style the canvas so it visually scales back to the original element size
+            canvas.className = 'pixel-canvas';
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            canvas.style.display = cs.display === 'block' ? 'block' : 'inline-block';
+            canvas.style.verticalAlign = cs.verticalAlign || 'baseline';
+            canvas.style.margin = cs.margin;
+            canvas.style.padding = cs.padding;
+
+            // Replace element content with canvas while preserving layout:
+            // - For block elements we empty the element and append the canvas so outer box stays.
+            // - For inline elements we replace the node with a span wrapper containing the canvas.
+            const displayBlockish = cs.display === 'block' || el.tagName.toLowerCase() === 'p' || el.tagName.toLowerCase() === 'div' || el.tagName.toLowerCase().match(/^h[1-6]$/);
+            try {
+                if (displayBlockish) {
+                    el.innerHTML = '';
+                    el.appendChild(canvas);
+                } else {
+                    const wrapper = document.createElement('span');
+                    wrapper.style.display = canvas.style.display;
+                    wrapper.style.width = canvas.style.width;
+                    wrapper.style.height = canvas.style.height;
+                    wrapper.style.verticalAlign = canvas.style.verticalAlign;
+                    wrapper.appendChild(canvas);
+                    el.parentNode.replaceChild(wrapper, el);
+                }
+            } catch (err) {
+                // revert on failure
+                console.error('Failed to replace element with pixel canvas:', err);
+                el.innerHTML = originalHTML;
+            }
+        }
+
+        function applyPixelation(selector = SELECTOR, scale = PIXEL_SCALE) {
+            const nodes = document.querySelectorAll(selector);
+            nodes.forEach(node => {
+                try {
+                    pixelateElement(node, scale);
+                } catch (e) {
+                    console.error('Pixelation error for element', node, e);
+                }
+            });
+        }
+
+        // Run when content is revealed and on resize. We keep a debounce on resize.
+        let resizeTimer = null;
+        function onResizeDebounced() {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // Re-apply pixelation: revert and re-do.
+                // For simplicity we reload page text by reloading original DOM from serverless fallback:
+                // But to be safe, the script simply reloads the page to ensure correct rendering on resize.
+                // In most cases a full reload is not needed; a more advanced version would save original text and re-render.
+                // Here we re-run on resize by refreshing the page layout if necessary.
+                // Instead of reload, re-run pixelation after small delay (best-effort).
+                // NOTE: If user prefers not to reload on resize, comment out the next line.
+                // location.reload();
+                // Best-effort: just run applyPixelation again (works for many resizes).
+                applyPixelation();
+            }, 200);
+        }
+
+        // Wait for DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // preserve ENTER button functionality
+            const enterBtn = document.getElementById('enter-btn');
+            if (enterBtn) {
+                enterBtn.addEventListener('click', () => {
+                    document.getElementById('main-content').style.display = 'block';
+                    enterBtn.style.display = 'none';
+                    // Small timeout to let layout settle then pixelate
+                    setTimeout(() => applyPixelation(), 60);
+                    const audio = document.getElementById("background-music");
+                    if (audio) audio.play().catch(()=>{});
+                });
+            } else {
+                // if no enter button, just pixelate after short timeout
+                setTimeout(() => applyPixelation(), 60);
+            }
+
+            // re-run when fonts/images/layout finish loading (some fonts/images affect size)
+            window.addEventListener('load', () => {
+                setTimeout(() => applyPixelation(), 60);
+            });
+
+            window.addEventListener('resize', onResizeDebounced);
+        });
+    })();
+    </script>
+</body>
+</html>
